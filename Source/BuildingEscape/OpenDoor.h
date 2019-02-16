@@ -32,4 +32,7 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	class ATriggerVolume* PressurePlate;
+
+	//UPROPERTY(EditAnywhere)
+	class AActor* ActorThatOpens;
 };

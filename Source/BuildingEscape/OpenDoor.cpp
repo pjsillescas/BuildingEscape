@@ -3,6 +3,8 @@
 #include "OpenDoor.h"
 #include "Runtime/Engine/Classes/GameFramework/Actor.h"
 #include "Engine/TriggerVolume.h"
+#include "Runtime/Engine/Classes/GameFramework/PlayerController.h"
+#include "Runtime/Engine/Classes/Engine/World.h"
 
 // Sets default values for this component's properties
 UOpenDoor::UOpenDoor()
@@ -22,8 +24,7 @@ void UOpenDoor::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	
-	SetDoorAngle(60);
+	ActorThatOpens = GetWorld()->GetFirstPlayerController()->GetPawn();
 }
 
 void UOpenDoor::SetDoorAngle(int32 Angle)
@@ -43,5 +44,15 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+	
+	float Angle;
+	// Poll the trigger volume 
+	// If the actor that opens is in the volume,
+	if(PressurePlate->IsOverlappingActor(ActorThatOpens))
+		Angle = 180-OpenAngle;
+	else
+		Angle = 180;
+
+	SetDoorAngle(Angle);
 }
 
