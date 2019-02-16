@@ -2,6 +2,7 @@
 
 #include "OpenDoor.h"
 #include "Runtime/Engine/Classes/GameFramework/Actor.h"
+#include "Engine/TriggerVolume.h"
 
 // Sets default values for this component's properties
 UOpenDoor::UOpenDoor()
@@ -11,6 +12,7 @@ UOpenDoor::UOpenDoor()
 	PrimaryComponentTick.bCanEverTick = true;
 
 	// ...
+	OpenAngle = 90;
 }
 
 

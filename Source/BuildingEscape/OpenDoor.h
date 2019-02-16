@@ -26,4 +26,10 @@ public:
 
 	void SetDoorAngle(int32 Angle);
 		
+private:
+	UPROPERTY(VisibleAnywhere)
+	float OpenAngle;
+
+	UPROPERTY(EditAnywhere)
+	class ATriggerVolume* PressurePlate;
 };
