@@ -15,6 +15,7 @@ UOpenDoor::UOpenDoor()
 
 	// ...
 	OpenAngle = 90;
+	LastDoorOpenTime = 0;
 }
 
 
@@ -25,18 +26,26 @@ void UOpenDoor::BeginPlay()
 
 	// ...
 	ActorThatOpens = GetWorld()->GetFirstPlayerController()->GetPawn();
+	Owner = GetOwner();
 }
 
 void UOpenDoor::SetDoorAngle(int32 Angle)
 {
-	AActor* Owner = GetOwner();
-	FRotator ActorRotator = Owner->GetActorRotation();
-
 	FRotator NewRotation(0, Angle, 0);
 	Owner->SetActorRotation(NewRotation);
-
 }
 
+void UOpenDoor::OpenDoor()
+{
+	float Angle = 180 - OpenAngle;
+	SetDoorAngle(Angle);
+}
+
+void UOpenDoor::CloseDoor()
+{
+	float Angle = 180;
+	SetDoorAngle(Angle);
+}
 
 // Called every frame
 void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -45,14 +54,19 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 
 	// ...
 	
-	float Angle;
 	// Poll the trigger volume 
 	// If the actor that opens is in the volume,
-	if(PressurePlate->IsOverlappingActor(ActorThatOpens))
-		Angle = 180-OpenAngle;
-	else
-		Angle = 180;
+	if (PressurePlate->IsOverlappingActor(ActorThatOpens))
+	{
+		OpenDoor();
+		LastDoorOpenTime = GetWorld()->GetTimeSeconds();
+	}
 
-	SetDoorAngle(Angle);
+	// Check if it's time to close the door
+	float Time = GetWorld()->GetTimeSeconds();
+	if (fabs(Time - LastDoorOpenTime) >= DoorCloseDelay)
+	{
+		CloseDoor();
+	}
 }
 

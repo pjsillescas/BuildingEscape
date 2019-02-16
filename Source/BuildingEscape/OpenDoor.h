@@ -27,7 +27,7 @@ public:
 	void SetDoorAngle(int32 Angle);
 		
 private:
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere)
 	float OpenAngle;
 
 	UPROPERTY(EditAnywhere)
@@ -35,4 +35,15 @@ private:
 
 	//UPROPERTY(EditAnywhere)
 	class AActor* ActorThatOpens;
+
+	UPROPERTY(EditAnywhere)
+	float DoorCloseDelay = 1;
+
+	float LastDoorOpenTime;
+
+	class AActor* Owner;
+
+	void OpenDoor();
+	void CloseDoor();
+
 };
