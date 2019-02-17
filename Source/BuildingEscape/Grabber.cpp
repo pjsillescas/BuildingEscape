@@ -4,6 +4,7 @@
 #include "Runtime/Engine/Classes/Engine/World.h"
 #include "Runtime/Engine/Classes/GameFramework/PlayerController.h"
 #include "Runtime/Engine/Public/DrawDebugHelpers.h"
+#include "PhysicsEngine/PhysicsHandleComponent.h"
 
 #define OUT
 
@@ -15,6 +16,7 @@ UGrabber::UGrabber()
 	PrimaryComponentTick.bCanEverTick = true;
 
 	// ...
+	PhysicsHandle = nullptr;
 }
 
 
@@ -26,6 +28,17 @@ void UGrabber::BeginPlay()
 	// ...
 
 	UE_LOG(LogTemp,Warning,TEXT("Grabber reporting for duty"));
+
+	// Look for attached physics handle
+	PhysicsHandle = Cast<UPhysicsHandleComponent>(GetOwner()->GetComponentByClass(UPhysicsHandleComponent::StaticClass()));
+	if (PhysicsHandle != nullptr)
+	{
+		UE_LOG(LogTemp,Warning,TEXT("Physics handle found!!"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Grabber: No physics handle found in actor '%s'"),*(GetOwner()->GetName()));
+	}
 	
 }
 

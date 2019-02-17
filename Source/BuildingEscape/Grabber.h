@@ -27,5 +27,5 @@ private:
 	// How far ahead of the lecture can we reach in cm
 	float Reach = 100;
 
-		
+	class UPhysicsHandleComponent* PhysicsHandle;
 };
