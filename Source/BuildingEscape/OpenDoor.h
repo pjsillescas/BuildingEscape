@@ -33,11 +33,11 @@ private:
 	UPROPERTY(EditAnywhere)
 	class ATriggerVolume* PressurePlate;
 
-	//UPROPERTY(EditAnywhere)
-	class AActor* ActorThatOpens;
-
 	UPROPERTY(EditAnywhere)
 	float DoorCloseDelay = 1;
+
+	UPROPERTY(EditAnywhere)
+		float TriggerMass;
 
 	float LastDoorOpenTime;
 
@@ -46,4 +46,6 @@ private:
 	void OpenDoor();
 	void CloseDoor();
 
+	// Returns total mass in kg
+	float GetTotalMassOfActorsOnPlate();
 };

@@ -44,5 +44,4 @@ private:
 	const FHitResult GetFirstPhysicsBodyInReach();
 
 	void GetGrabbingRange(FVector& Location, FVector& LineTraceEnd);
-
 };
