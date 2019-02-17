@@ -43,4 +43,6 @@ private:
 	// Return hit for physics body in reach
 	const FHitResult GetFirstPhysicsBodyInReach();
 
+	void GetGrabbingRange(FVector& Location, FVector& LineTraceEnd);
+
 };
