@@ -18,6 +18,8 @@ UOpenDoor::UOpenDoor()
 	OpenAngle = 90;
 	LastDoorOpenTime = 0;
 	TriggerMass = 50;
+	PressurePlate = nullptr;
+	Owner = nullptr;
 }
 
 
@@ -28,6 +30,11 @@ void UOpenDoor::BeginPlay()
 
 	// ...
 	Owner = GetOwner();
+
+	if (PressurePlate == nullptr)
+	{
+		UE_LOG(LogTemp,Warning,TEXT("Pressure plate is not initialized in %s"),*(Owner->GetName()));
+	}
 }
 
 void UOpenDoor::SetDoorAngle(int32 Angle)
@@ -39,13 +46,16 @@ void UOpenDoor::SetDoorAngle(int32 Angle)
 void UOpenDoor::OpenDoor()
 {
 	float Angle = 180 - OpenAngle;
-	SetDoorAngle(Angle);
+	//SetDoorAngle(Angle);
+
+	OnOpenRequest.Broadcast();
 }
 
 void UOpenDoor::CloseDoor()
 {
 	float Angle = 180;
-	SetDoorAngle(Angle);
+	//SetDoorAngle(Angle);
+	OnCloseRequest.Broadcast();
 }
 
 // Called every frame
@@ -77,15 +87,18 @@ float UOpenDoor::GetTotalMassOfActorsOnPlate()
 	
 	// Find all overlapping actors
 	TArray<AActor*> OverlappingActors;
-	PressurePlate->GetOverlappingActors(OUT OverlappingActors);
 
-	// Iterate through them adding their masses
-	for (const auto Actor : OverlappingActors)
+	if (PressurePlate != nullptr)
 	{
-		UPrimitiveComponent* PrimitiveComponent = Cast<UPrimitiveComponent>(Actor->GetComponentByClass(UPrimitiveComponent::StaticClass()));
-		TotalMass += PrimitiveComponent->GetMass();
-	}
-	UE_LOG(LogTemp,Warning,TEXT("Total mass of %.5f kg"),TotalMass);
+		PressurePlate->GetOverlappingActors(OUT OverlappingActors);
 
+		// Iterate through them adding their masses
+		for (const auto Actor : OverlappingActors)
+		{
+			UPrimitiveComponent* PrimitiveComponent = Cast<UPrimitiveComponent>(Actor->GetComponentByClass(UPrimitiveComponent::StaticClass()));
+			TotalMass += PrimitiveComponent->GetMass();
+		}
+		UE_LOG(LogTemp, Warning, TEXT("Total mass of %.5f kg"), TotalMass);
+	}
 	return TotalMass;
 }

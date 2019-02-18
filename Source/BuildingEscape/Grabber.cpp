@@ -19,6 +19,7 @@ UGrabber::UGrabber()
 
 	// ...
 	PhysicsHandle = nullptr;
+	InputComponent = nullptr;
 }
 
 
@@ -96,6 +97,7 @@ void UGrabber::Grab()
 	if (ActorHit != nullptr)
 	{
 		auto ComponentToGrab = Hit.GetComponent();
+		if (PhysicsHandle == nullptr) return;
 		PhysicsHandle->GrabComponent(ComponentToGrab, NAME_None,ComponentToGrab->GetOwner()->GetActorLocation(),true /* Allow rotation */);
 		
 		FString Name = ActorHit->GetName();
@@ -110,6 +112,8 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+
+	if (PhysicsHandle == nullptr) return;
 
 	// if the physics handle is attached
 	if (PhysicsHandle != nullptr && PhysicsHandle->GrabbedComponent != nullptr)
