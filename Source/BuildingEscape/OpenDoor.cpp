@@ -16,7 +16,6 @@ UOpenDoor::UOpenDoor()
 
 	// ...
 	OpenAngle = 90;
-	LastDoorOpenTime = 0;
 	TriggerMass = 50;
 	PressurePlate = nullptr;
 	Owner = nullptr;
@@ -43,21 +42,6 @@ void UOpenDoor::SetDoorAngle(int32 Angle)
 	Owner->SetActorRotation(NewRotation);
 }
 
-void UOpenDoor::OpenDoor()
-{
-	float Angle = 180 - OpenAngle;
-	//SetDoorAngle(Angle);
-
-	OnOpenRequest.Broadcast();
-}
-
-void UOpenDoor::CloseDoor()
-{
-	float Angle = 180;
-	//SetDoorAngle(Angle);
-	OnCloseRequest.Broadcast();
-}
-
 // Called every frame
 void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
@@ -69,15 +53,11 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 	// If the actor that opens is in the volume,
 	if (GetTotalMassOfActorsOnPlate() > TriggerMass)
 	{
-		OpenDoor();
-		LastDoorOpenTime = GetWorld()->GetTimeSeconds();
+		OnOpenRequest.Broadcast();
 	}
-
-	// Check if it's time to close the door
-	float Time = GetWorld()->GetTimeSeconds();
-	if (fabs(Time - LastDoorOpenTime) >= DoorCloseDelay)
+	else
 	{
-		CloseDoor();
+		OnCloseRequest.Broadcast();
 	}
 }
 
@@ -98,7 +78,9 @@ float UOpenDoor::GetTotalMassOfActorsOnPlate()
 			UPrimitiveComponent* PrimitiveComponent = Cast<UPrimitiveComponent>(Actor->GetComponentByClass(UPrimitiveComponent::StaticClass()));
 			TotalMass += PrimitiveComponent->GetMass();
 		}
+		
 		UE_LOG(LogTemp, Warning, TEXT("Total mass of %.5f kg"), TotalMass);
 	}
+
 	return TotalMass;
 }
